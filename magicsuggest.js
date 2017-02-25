@@ -32,6 +32,16 @@
              */
             allowDuplicates: false,
 
+			/**
+			 * The method used to determine if a 'duplicate' is already selected
+			 *
+			 * @param {object} selection
+			 * @returns {boolean}
+			 */
+			duplicateChecker: function (selection) {
+				return $.inArray(selection[cfg.valueField], this.getValue()) === -1;
+			},
+
             /**
              * Additional config object passed to each $.ajax call
              */
@@ -377,7 +387,7 @@
                 }
                 var valuechanged = false;
                 $.each(items, function(index, json) {
-                    if (cfg.allowDuplicates || $.inArray(json[cfg.valueField], ms.getValue()) === -1) {
+                    if (cfg.allowDuplicates || cfg.duplicateChecker.call(ms, json)) {
                         _selection.push(json);
                         valuechanged = true;
                     }
@@ -1133,7 +1143,7 @@
                 }
                 // take out the ones that have already been selected
                 $.each(filtered, function(index, obj) {
-                    if (cfg.allowDuplicates || $.inArray(obj[cfg.valueField], selectedValues) === -1) {
+                    if (cfg.allowDuplicates || cfg.duplicateChecker.call(ms, obj)) {
                         newSuggestions.push(obj);
                     }
                 });
